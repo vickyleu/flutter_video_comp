@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.content.FileProvider
 import bravobit.nl.ffmpegandroid.BuildConfig
 import io.flutter.plugin.common.MethodChannel
@@ -44,6 +45,7 @@ class Utility(private val channelName: String) {
                 retriever.setDataSource(context, Uri.fromFile(file))
             }
         }catch (e:Exception){
+            Log.e("retriever crash","${e.toString()}");
             return  JSONObject()
         }
 
