@@ -1,0 +1,14 @@
+.DS_Store
+.dart_tool/
+.idea/*
+.packages
+.pub/
+build/
+.metadata
+android/.gitignore
+android/.idea/*
+fluttervideocomp.iml
+pubspec.lock
+test/
+android/gradle/
+example/ios/Podfile.lock
