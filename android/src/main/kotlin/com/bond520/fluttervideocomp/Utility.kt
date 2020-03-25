@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.content.FileProvider
-import bravobit.nl.ffmpegandroid.BuildConfig
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
 import java.io.File
@@ -39,8 +38,11 @@ class Utility(private val channelName: String) {
         val retriever = MediaMetadataRetriever()
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val uri = FileProvider.getUriForFile(context, provider?:"", file)
-                retriever.setDataSource(context, uri)
+                val uri: Uri = FileProvider.getUriForFile(context.applicationContext, provider?:"", file)
+//                retriever.setDataSource(context, uri)
+                Log.e("getMediaInfoJson","${uri.path}")
+                retriever.setDataSource(context, Uri.fromFile(file))
+//                retriever.setDataSource(context, Uri.fromFile(file))
             }else{
                 retriever.setDataSource(context, Uri.fromFile(file))
             }
@@ -86,6 +88,7 @@ class Utility(private val channelName: String) {
             json.put("orientation", ori)
         }
 
+        Log.e("getMediaInfoJson json.toString(","${json.toString()}")
         return json
     }
 

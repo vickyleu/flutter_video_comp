@@ -23,22 +23,25 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
         val ffmpeg = FFmpeg.getInstance(context)
 
         if (!ffmpeg.isSupported) {
+            android.util.Log.e("pathpath", "ffmpeg.isSupported==>" + ffmpeg.isSupported)
             return result.error(channelName, "FlutterVideoCompress Error",
                     "ffmpeg isn't supported this platform")
         }
 
         val dir = context.getExternalFilesDir("flutter_video_compress")
-
         if (dir != null && !dir.exists()) dir.mkdirs()
 
         val file = File(dir, path.substring(path.lastIndexOf("/")))
         utility.deleteFile(file)
 
+
         val scale = quality.getScaleString()
         val dm = context.resources.displayMetrics
-        val cmdArray = mutableListOf("-noautorotate", "-i", path, "-vcodec", "h264", "-crf", "48","-f","mp4",
-                "-s","${dm.widthPixels}x${dm.heightPixels}","-movflags", "faststart", "-vf",
-                "scale=$scale:-2", "-preset:v",  "-b:v", "200k")
+        android.util.Log.e("pathpath", "path==>" + path + "  file.path=>" + file.path + "   dir=>" + dir.path)
+        val cmdArray = mutableListOf("-noautorotate", "-i", path, "-vcodec", "libx264", "-preset", "slow", "-crf", "28", "-y", "-movflags", "+faststart", "-vf",
+                "scale=$scale:-2", "-b:v", "1000k")
+
+//        ffmpeg -i MVI_7274.MOV -vcodec libx264 -preset fast -crf 20 -y -vf "scale=1920:-1" -acodec libmp3lame -ab 128k a.mp4
 
         //"ultrafast",
 //        val cmdArray = mutableListOf("-noautorotate", "-i", path, "-vcodec", "h264", "-crf", "28", "-movflags", "+faststart", "-vf", "scale=$scale:-2", "-preset:v", "ultrafast", "-b:v", "1000k")
