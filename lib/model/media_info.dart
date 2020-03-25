@@ -1,4 +1,4 @@
-part of flutter_video_compress;
+part of flutter_video_comp;
 
 class MediaInfo {
   String path;

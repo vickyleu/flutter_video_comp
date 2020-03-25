@@ -1,7 +1,7 @@
 /// If you read this source code, you may find this surprise.
 /// a small subscription library
 
-part of flutter_video_compress;
+part of flutter_video_comp;
 
 class ObservableBuilder<T> {
   final StreamController<T> _observable = StreamController();

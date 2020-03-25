@@ -1,9 +1,9 @@
-part of flutter_video_compress;
+part of flutter_video_comp;
 
-class FlutterVideoCompress {
+class FlutterVideoComp {
   static const _channel = const MethodChannel('fluttervideocomp');
 
-  factory FlutterVideoCompress() => FlutterVideoCompress._();
+  factory FlutterVideoComp() => FlutterVideoComp._();
 
   /// Subscribe the conversion progress
   final compressProgress$ = ObservableBuilder<double>();
@@ -13,7 +13,7 @@ class FlutterVideoCompress {
 
   bool _isCompressing = false;
 
-  FlutterVideoCompress._() {
+  FlutterVideoComp._() {
     _channel.setMethodCallHandler(_handleCallback);
   }
 
