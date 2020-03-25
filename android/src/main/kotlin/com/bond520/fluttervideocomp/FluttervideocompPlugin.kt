@@ -11,13 +11,18 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 /** FluttervideocompPlugin */
 public class FluttervideocompPlugin: FlutterPlugin, MethodCallHandler {
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    this.binding=flutterPluginBinding
     val channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "fluttervideocomp")
     channel.setMethodCallHandler(FluttervideocompPlugin());
   }
 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+  private var binding:FlutterPlugin.FlutterPluginBinding?=null
 
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    this.binding=null
   }
+
+
 
   // This static function is optional and equivalent to onAttachedToEngine. It supports the old
   // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
@@ -34,16 +39,19 @@ public class FluttervideocompPlugin: FlutterPlugin, MethodCallHandler {
   private var ffmpegCommander: FFmpegCommander? = null
 
   companion object {
-    private lateinit var reg: Registrar
     @JvmStatic
     fun registerWith(registrar: Registrar) {
       val channel = MethodChannel(registrar.messenger(), "fluttervideocomp")
       channel.setMethodCallHandler(FluttervideocompPlugin())
-      reg = registrar
     }
   }
   override fun onMethodCall(call: MethodCall, result: Result) {
-    initFfmpegCommanderIfNeeded()
+    if(binding==null){
+      result.success("")
+      return
+    }
+    val binding=this.binding!!
+    initFfmpegCommanderIfNeeded(binding)
     when (call.method) {
       "getThumbnail" -> {
         val path = call.argument<String>("path")!!
@@ -56,13 +64,13 @@ public class FluttervideocompPlugin: FlutterPlugin, MethodCallHandler {
         val quality = call.argument<Int>("quality")!!
         val position = call.argument<Int>("position")!!.toLong()
         val provider = call.argument<String>("provider")!!
-        ThumbnailUtility(channelName).getThumbnailWithFile(FluttervideocompPlugin.reg.context(), path, quality,
+        ThumbnailUtility(channelName).getThumbnailWithFile(binding.applicationContext, path, quality,
                 position, result)
       }
       "getMediaInfo" -> {
         val path = call.argument<String>("path")!!
         val provider = call.argument<String>("provider")
-        result.success(utility.getMediaInfoJson(FluttervideocompPlugin.reg.context(), path, provider).toString())
+        result.success(utility.getMediaInfoJson(binding.applicationContext, path, provider).toString())
       }
       "compressVideo" -> {
         val path = call.argument<String>("path")!!
@@ -75,7 +83,7 @@ public class FluttervideocompPlugin: FlutterPlugin, MethodCallHandler {
         val provider = call.argument<String>("frameRate")
 
         ffmpegCommander?.compressVideo(path, VideoQuality.from(quality), deleteOrigin,
-                startTime, duration, includeAudio, frameRate, result, FluttervideocompPlugin.reg.messenger(), provider)
+                startTime, duration, includeAudio, frameRate, result, binding.binaryMessenger, provider)
       }
       "cancelCompression" -> {
         ffmpegCommander?.cancelCompression()
@@ -87,19 +95,18 @@ public class FluttervideocompPlugin: FlutterPlugin, MethodCallHandler {
         val endTime = call.argument<Int>("endTime")!!.toLong()
         val duration = call.argument<Int>("duration")!!.toLong()
 
-        ffmpegCommander?.convertVideoToGif(path, startTime, endTime, duration, result,
-                FluttervideocompPlugin.reg.messenger())
+        ffmpegCommander?.convertVideoToGif(path, startTime, endTime, duration, result,binding.binaryMessenger)
       }
       "deleteAllCache" -> {
-        utility.deleteAllCache(FluttervideocompPlugin.reg.context(), result)
+        utility.deleteAllCache(binding.applicationContext, result)
       }
       else -> result.notImplemented()
     }
   }
 
-  private fun initFfmpegCommanderIfNeeded() {
+  private fun initFfmpegCommanderIfNeeded(binding: FlutterPlugin.FlutterPluginBinding) {
     if (ffmpegCommander == null) {
-      ffmpegCommander = FFmpegCommander(FluttervideocompPlugin.reg.context(), channelName)
+      ffmpegCommander = FFmpegCommander(binding.applicationContext, channelName)
     }
   }
 }
