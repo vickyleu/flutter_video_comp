@@ -39,9 +39,9 @@ class Utility(private val channelName: String) {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val uri: Uri = FileProvider.getUriForFile(context.applicationContext, provider?:"", file)
-//                retriever.setDataSource(context, uri)
+                retriever.setDataSource(context, uri)
                 Log.e("getMediaInfoJson","${uri.path}")
-                retriever.setDataSource(context, Uri.fromFile(file))
+//                retriever.setDataSource(context, Uri.fromFile(file))
 //                retriever.setDataSource(context, Uri.fromFile(file))
             }else{
                 retriever.setDataSource(context, Uri.fromFile(file))

@@ -151,7 +151,8 @@ public class SwiftFluttervideocompPlugin: NSObject, FlutterPlugin {
           case 2:
               return AVAssetExportPresetMediumQuality
           case 3:
-              return AVAssetExportPresetHighestQuality
+            return AVAssetExportPreset960x540
+//              return AVAssetExportPresetHighestQuality
           default:
               return AVAssetExportPresetLowQuality
           }
