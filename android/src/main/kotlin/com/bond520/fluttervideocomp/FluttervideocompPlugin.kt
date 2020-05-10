@@ -114,14 +114,6 @@ public class FluttervideocompPlugin : FlutterPlugin, ActivityAware, MethodCallHa
                 ffmpegCommander?.cancelCompression()
                 result.success("")
             }
-            "convertVideoToGif" -> {
-                val path = call.argument<String>("path")!!
-                val startTime = call.argument<Int>("startTime")!!.toLong()
-                val endTime = call.argument<Int>("endTime")!!.toLong()
-                val duration = call.argument<Int>("duration")!!.toLong()
-
-                ffmpegCommander?.convertVideoToGif(path, startTime, endTime, duration, result, binding2.binaryMessenger)
-            }
             "deleteAllCache" -> {
                 utility.deleteAllCache(binding.activity, result)
             }

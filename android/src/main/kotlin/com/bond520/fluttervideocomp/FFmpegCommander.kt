@@ -103,49 +103,6 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
     private fun isLandscapeImage(orientation: Int) = orientation != 90 && orientation != 270
 
 
-    fun convertVideoToGif(path: String, startTime: Long = 0, endTime: Long, duration: Long,
-                          result: MethodChannel.Result, messenger: BinaryMessenger) {
-        var gifDuration = 0L
-        if (endTime > 0) {
-            if (startTime > endTime) {
-                result.error(channelName, "FlutterVideoCompress Error",
-                        "startTime should be greater than startTime")
-            } else {
-                gifDuration = (endTime - startTime)
-            }
-        } else {
-            gifDuration = duration
-        }
-
-        val ffmpeg = FFmpeg.getInstance(context)
-
-        if (!ffmpeg.isSupported) {
-            return result.error(channelName, "FlutterVideoCompress Error",
-                    "ffmpeg is not supported this platform")
-        }
-
-        val dir = context.getExternalFilesDir("flutter_video_compress")
-
-        if (dir != null && !dir.exists()) dir.mkdirs()
-
-
-        val file = File(dir, utility.getFileNameWithGifExtension(path))
-        utility.deleteFile(file)
-
-        val cmd = arrayOf("-i", path, "-ss", startTime.toString(), "-t", gifDuration.toString(),
-                "-vf", "scale=640:-2", "-r", "15", file.absolutePath)
-
-        this.ffTask = ffmpeg.execute(cmd, object : ExecuteBinaryResponseHandler() {
-            override fun onProgress(message: String) {
-                notifyProgress(message, messenger)
-            }
-
-            override fun onFinish() {
-                result.success(file.absolutePath)
-            }
-        })
-    }
-
     private fun notifyProgress(message: String, messenger: BinaryMessenger) {
         if ("Duration" in message) {
             val reg = Regex("""Duration: ((\d{2}:){2}\d{2}\.\d{2}).*""")
