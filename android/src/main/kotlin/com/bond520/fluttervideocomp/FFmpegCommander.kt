@@ -70,7 +70,7 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
             cmdArray.add(frameRate.toString())
         }
 
-        cmdArray.add(file.absolutePath)
+        cmdArray.add(" ${file.absolutePath}")
 
         this.ffTask = ffmpeg.execute(cmdArray.toTypedArray(),
                 object : ExecuteBinaryResponseHandler() {
@@ -89,12 +89,19 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
                     }
 
                     override fun onFinish() {
-                        val json = utility.getMediaInfoJson(context, file.absolutePath, provider)
-                        json.put("isCancel", false)
-                        result.success(json.toString())
-                        if (deleteOrigin) {
-                            File(path).delete()
+                        if(!file.exists()){
+                            val json = utility.getMediaInfoJson(context, path, provider)
+                            json.put("isCancel", false)
+                            result.success(json.toString())
+                        }else{
+                            val json = utility.getMediaInfoJson(context, file.absolutePath, provider)
+                            json.put("isCancel", false)
+                            result.success(json.toString())
+                            if (deleteOrigin) {
+                                File(path).delete()
+                            }
                         }
+
                         totalTime = 0
                     }
                 })

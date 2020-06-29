@@ -1,5 +1,6 @@
 package com.bond520.fluttervideocomp
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -10,6 +11,9 @@ import androidx.core.content.FileProvider
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONObject
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.IOException
 
 class Utility(private val channelName: String) {
 
@@ -33,16 +37,19 @@ class Utility(private val channelName: String) {
         return timeStamp.toLong()
     }
 
-    fun getMediaInfoJson(context: Context, path: String,provider:String?): JSONObject {
+    @SuppressLint("LongLogTag")
+    fun getMediaInfoJson(context: Context, path: String, provider:String?): JSONObject {
         val file = File(path)
+        if(!file.exists()){
+            Log.e("retriever failure","文件不存在啊");
+            return  JSONObject()
+        }
         val retriever = MediaMetadataRetriever()
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val uri: Uri = FileProvider.getUriForFile(context.applicationContext, provider?:"", file)
                 retriever.setDataSource(context, uri)
                 Log.e("getMediaInfoJson","${uri.path}")
-//                retriever.setDataSource(context, Uri.fromFile(file))
-//                retriever.setDataSource(context, Uri.fromFile(file))
             }else{
                 retriever.setDataSource(context, Uri.fromFile(file))
             }
@@ -94,10 +101,12 @@ class Utility(private val channelName: String) {
 
     fun getBitmap(path: String, position: Long, result: MethodChannel.Result): Bitmap {
         var bitmap: Bitmap? = null
+        val file = File(path)
         val retriever = MediaMetadataRetriever()
-
+        var inputStream : FileInputStream?= null
         try {
-            retriever.setDataSource(path)
+            inputStream =  FileInputStream(file.absolutePath)
+            retriever.setDataSource(inputStream.fd)
             bitmap = retriever.getFrameAtTime(position, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         } catch (ex: IllegalArgumentException) {
             result.error(channelName, "Assume this is a corrupt video file", null)
@@ -109,8 +118,8 @@ class Utility(private val channelName: String) {
             } catch (ex: RuntimeException) {
                 result.error(channelName, "Ignore failures while cleaning up", null)
             }
+            inputStream?.close()
         }
-
         if (bitmap == null) result.success(emptyArray<Int>())
 
         val width = bitmap!!.width
