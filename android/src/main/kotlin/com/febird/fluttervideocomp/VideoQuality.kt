@@ -1,4 +1,4 @@
-package com.bond520.fluttervideocomp
+package com.example.fluttervideocomp
 
 enum class VideoQuality(val value : Int) {
     DefaultQuality(0),

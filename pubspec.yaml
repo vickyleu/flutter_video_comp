@@ -18,6 +18,6 @@ dev_dependencies:
 flutter:
 
   plugin:
-    androidPackage: com.bond520.fluttervideocomp
+    androidPackage: com.example.fluttervideocomp
     pluginClass: FluttervideocompPlugin
 

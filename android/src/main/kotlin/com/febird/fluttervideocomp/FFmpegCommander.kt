@@ -1,4 +1,4 @@
-package com.bond520.fluttervideocomp
+package com.example.fluttervideocomp
 
 import android.content.Context
 import io.flutter.plugin.common.BinaryMessenger
@@ -37,7 +37,7 @@ class FFmpegCommander(private val context: Context, private val channelName: Str
 
         val scale = quality.getScaleString()
         val dm = context.resources.displayMetrics
-        android.util.Log.e("pathpath", "path==>" + path + "  file.path=>" + file.path + "   dir=>" + dir.path)
+        android.util.Log.e("pathpath", "path==>" + path + "  file.path=>" + file.path + "   dir=>" + dir?.path)
         val cmdArray = mutableListOf("-noautorotate", "-i", path, "-vcodec", "libx264", "-preset", "slow", "-crf", "28", "-y", "-movflags", "+faststart", "-vf",
                 "scale=$scale:-2", "-b:v", "1000k")
 

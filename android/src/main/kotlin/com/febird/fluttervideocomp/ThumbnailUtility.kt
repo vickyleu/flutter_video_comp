@@ -1,4 +1,4 @@
-package com.bond520.fluttervideocomp
+package com.example.fluttervideocomp
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -1,4 +1,4 @@
-package com.bond520.fluttervideocomp
+package com.example.fluttervideocomp
 
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin

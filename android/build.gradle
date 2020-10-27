@@ -1,4 +1,4 @@
-group 'com.bond520.fluttervideocomp'
+group 'com.example.fluttervideocomp'
 version '1.0-SNAPSHOT'
 
 buildscript {

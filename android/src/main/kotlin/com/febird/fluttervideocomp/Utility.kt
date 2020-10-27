@@ -1,4 +1,4 @@
-package com.bond520.fluttervideocomp
+package com.example.fluttervideocomp
 
 import android.annotation.SuppressLint
 import android.content.Context
